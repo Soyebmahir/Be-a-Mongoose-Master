@@ -100,10 +100,12 @@ graph TD;
 
 # MongoDB Shell `Function` & `Operation` :
 
-|               Function               |          for use           |            example            |
-| :----------------------------------: | :------------------------: | :---------------------------: |
-|             ` show dbs`              |     show all database      |          `show dbs`           |
-|            `use database`            |    create new or switch    |     `use newDatabaseName`     |
-|    `db.createCollection("name")`     |   create new collection    | `db.createCollection('test')` |
-| `db.getCollection("collectionName")` |       get Collection       |  `db.getCollection('test')`   |
-|         `db.collectionName`          | get Collection another way |      `db.collectionName`      |
+|               Function               |             for use             |                  example                  |
+| :----------------------------------: | :-----------------------------: | :---------------------------------------: |
+|             ` show dbs`              |        show all database        |                `show dbs`                 |
+|            `use database`            |      create new or switch       |              `use developer`              |
+|    `db.createCollection("name")`     |      create new collection      |  `db.createCollection('MernDeveloper')`   |
+| `db.getCollection("collectionName")` |         get Collection          |    `db.getCollection('MernDeveloper')`    |
+|         `db.collectionName`          |   get Collection another way    |            `db.MernDeveloper`             |
+|  `db.collectionName.insert(object)`  | insert data into the collection | `db.MernDeveloper.insert({name:'soyeb'})` |
+|      `db.collectionName.find()`      |  find data from the collection  |         `db.MernDeveloper.find()`         |
