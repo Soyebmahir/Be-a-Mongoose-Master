@@ -482,3 +482,8 @@ db.test
   ```js
   db.test.find({ age: { $in: [10, 20, 30, 40] } });
   ```
+  # Delete document and a Entire collection
+  ```js
+  db.test.deleteOne({ _id: Object("6406ad64fc13ae5a40000073") });
+  ```
+  ##
