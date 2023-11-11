@@ -109,3 +109,55 @@ graph TD;
 |         `db.collectionName`          |   get Collection another way    |            `db.MernDeveloper`             |
 |  `db.collectionName.insert(object)`  | insert data into the collection | `db.MernDeveloper.insert({name:'soyeb'})` |
 |      `db.collectionName.find()`      |  find data from the collection  |         `db.MernDeveloper.find()`         |
+
+# Third Party site for GUI for Mongodb
+
+- studio 3T
+- No sql booster - paid but 1 month for trail
+
+# crud
+
+```js
+db.test.findOne({ gender: "Female" });
+db.test.findOne({ gender: "Female" }, { gender: 1, name: 1 }); //field filtering. gender:1 means gender field is true & will provide only gender data.
+// here is another way with project
+db.test.find({ gender: "Female" }).project({ gender: 1, name: 1, email: 1 });
+// project wont work with findOne
+
+// $gt,$gte,$lt,$lte,$eq,$neq
+db.test.find({ age: { $gte: 30 } }); //return those data whose age greater than 30
+
+// implicit
+db.test.find({ age: { $gte: 30, $lt: 100 } }, { age: 1 }).sort({ age: 1 }); //return those data whose age greater than 30 and less than 100. will provide only age data and descending order
+db.test
+  .find({ gender: "Female", age: { $gte: 30, $lt: 100 } }, { age: 1 })
+  .sort({ age: 1 }); //return those data whose gender is female, age greater than 30 and less than 100. will provide only age data and descending order
+
+db.test
+  .find(
+    { gender: "Female", interests: "cooking", age: { $gte: 30, $lt: 100 } },
+    { age: 1, gender: 1 }
+  )
+  .sort({ age: 1 }); //return those data whose gender is female, interested in cooking  age greater than 30 and less than 100. will provide only age data and descending order
+db.test
+  .find(
+    {
+      gender: "Female",
+      interests: { $in: ["Cooking", "Gaming"] },
+      age: { $gte: 30, $lt: 100 },
+    }
+  { age: 1,interests:1,gender:1 }
+  )
+  .sort({ age: 1 });
+//return those data whose gender is female, interested in cooking or gaming, age greater than 30 and less than 100. will provide  age,gender, interests data and descending order
+
+// explicitly $and
+db.test.find({$and:[
+   { age:{$gt:10}},
+
+  { gender:'Male'},
+
+  { interests:{$in:['Traveling','Cooking']}},
+
+]}).project({age:1,gender:1,interests:1}).sort({age:1}) // whose age greater than 10 gender male and interest in traveling or cooking
+```
