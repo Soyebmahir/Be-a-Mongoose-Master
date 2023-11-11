@@ -127,7 +127,7 @@ db.test.find({ gender: "Female" }).project({ gender: 1, name: 1, email: 1 });
 // $gt,$gte,$lt,$lte,$eq,$neq
 db.test.find({ age: { $gte: 30 } }); //return those data whose age greater than 30
 
-// implicit
+// implicit and or
 db.test.find({ age: { $gte: 30, $lt: 100 } }, { age: 1 }).sort({ age: 1 }); //return those data whose age greater than 30 and less than 100. will provide only age data and descending order
 db.test
   .find({ gender: "Female", age: { $gte: 30, $lt: 100 } }, { age: 1 })
@@ -160,4 +160,79 @@ db.test.find({$and:[
   { interests:{$in:['Traveling','Cooking']}},
 
 ]}).project({age:1,gender:1,interests:1}).sort({age:1}) // whose age greater than 10 gender male and interest in traveling or cooking
+// explicitly $or
+db.test.find({
+    $or:[
+   { age:{$eq:10}},
+   { age:{$eq:30}},
+   {interests:'hjbuh'}
+
+]}).project({age:1,gender:1,interests:1}).sort({age:1}) //only age 30 available
+
+
+// $Exist
+db.test.find({gender:{$exists:false}}) // return those data which dont have this field data
+db.test.find({gender:{$exists:true}}) //return those data whose has this field
+// it doesnt matter if that field had null or undefined value
+
+// $type
+ // we can find out data with the type of a value in field
+db.test.find({age:{$type:'string'}})
+
+// $size
+//findout data by array size
+db.test.find({friends:{$size:4}})
+
+// $all
+// with $all we can find field with the value in interests field's array. position of the value in index doesnt matter. if exist then return
+db.test.find({interests:{$all:["Cooking","Gaming"]}}).project({interests:1})
+
+
+// $elemMatch
+db.test.find({skills:{$elemMatch:{
+    name:'JAVASCRIPT',
+    level:'Intermidiate'
+}}}).project({skills:1}) //will match the element in a object then return
+
+
+
+// update
+// $set -> dont use $set with non-primitive data type it will change the data structure. like : interests:['gaming','shopping']
+// now I want to update with traveling
+// if I try with $set
+/*$set:
+interest:['traveling']
+....
+updated : interest:['traveling'] changed the array
+
+*/
+//main data
+{
+	"_id" : ObjectId("6406ad63fc13ae5a40000069"),
+	"interests" : [ "Gaming", "Cooking", "Writting" ]
+}
+// updating data
+db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000069")},{
+    $set:{
+        interests:['Gaming']
+    }
+})
+// updated data
+{
+	"_id" : ObjectId("6406ad63fc13ae5a40000069"),
+	"interests" : [ "Gaming" ]
+}
+// if you dont want to chnage the whole think but add sometthing in existed array of data
+// $addToSet
+db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000069")},{
+    $addToSet: {
+        interests:'Cooking',
+    }
+})
+//   updated data
+{
+	"_id" : ObjectId("6406ad63fc13ae5a40000069"),
+	"interests" : [ "Gaming", "Cooking" ]
+}
+
 ```
