@@ -134,3 +134,53 @@ db.test.aggregate([
   },
 ]);
 ```
+
+# $unwind
+
+### You cannot work directly on the elements of an array within a document with stages such as $group. The $unwind stage enables us to work with the values of the fields within an array.
+
+### Where there is an array field within the input documents, you will sometimes need to output the document several times, once for every element of that array.
+
+```js
+db.test.aggregate([
+  {
+    $unwind: "$interests", // breaks the interests array
+  },
+  {
+    $group: { _id: "$age", commonInterests: { $push: "$interests" } }, // create group with similar age and make common interest in every age
+  },
+]);
+```
+
+# $bucket
+
+### Categorizes incoming documents into groups, called buckets, based on a specified expression and bucket boundaries and outputs a document per each bucket. Each output document contains an \_id field whose value specifies the inclusive lower bound of the bucket. The
+
+### output option specifies the fields included in each output document.
+
+```js
+db.test.aggregate([
+  // stage 01
+
+  {
+    $bucket: {
+      groupBy: "$age",
+      boundaries: [20, 40, 60],
+      default: "More than 80",
+      output: {
+        count: { $sum: 1 },
+        karakaraAche: { $push: "$$ROOT" },
+      },
+    },
+  },
+  {
+    $sort: { count: -1 },
+  },
+  {
+    $limit: 1,
+  },
+  {
+    $project: { "karakaraAche._id": 1, "karakaraAche.name": 1, count: 1 },
+  },
+]);
+```
