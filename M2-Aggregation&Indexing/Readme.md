@@ -114,7 +114,7 @@ db.test.aggregate([
 db.test.aggregate([
   {
     $group: {
-      _id: null,
+      _id: null, // by null we declare a global id where everything is stored so that we can easily create report
       count: { $sum: 1 },
       fullDoc: { $push: "$$ROOT" }, //since fullDoc under one group so we can calculate with all salary field from all object of fullDoc
       totalSalary: { $sum: "$salary" },
@@ -164,17 +164,18 @@ db.test.aggregate([
 
   {
     $bucket: {
-      groupBy: "$age",
-      boundaries: [20, 40, 60],
-      default: "More than 80",
+      groupBy: "$age", //which field will be group id
+      boundaries: [20, 40, 60], // boundaries are the actual group Id
+      default: "More than 80", // this will be the group id with remaining ages
       output: {
-        count: { $sum: 1 },
+        //this will show the result
+        count: { $sum: 1 }, //
         karakaraAche: { $push: "$$ROOT" },
       },
     },
   },
   {
-    $sort: { count: -1 },
+    $sort: { count: -1 }, // we can sort with $sort
   },
   {
     $limit: 1,
@@ -183,4 +184,114 @@ db.test.aggregate([
     $project: { "karakaraAche._id": 1, "karakaraAche.name": 1, count: 1 },
   },
 ]);
+```
+
+# $facet
+
+### The $facet stage in MongoDB's aggregation framework is used to process multiple aggregation pipelines within a single stage on the same set of input documents. It allows you to compute multiple aggregations on the same set of documents, which can be useful for various scenarios.
+
+```js
+db.sales.aggregate([
+  {
+    $facet: {
+      totalSales: [
+        {
+          $group: {
+            _id: null,
+            total: { $sum: "$amount" },
+          },
+        },
+      ],
+      averageQuantity: [
+        { $group: { _id: null, avgQuantity: { $avg: "$quantity" } } },
+      ],
+      count: [{ $count: "totalDocuments" }],
+    },
+  },
+]);
+```
+
+### another One
+
+```js
+db.test.aggregate([
+  {
+    $facet: {
+      //pipeLine 1
+      friendsCOunt: [
+        //stage 1
+        { $unwind: "$friends" },
+        { $group: { _id: "$friends", count: { $sum: 1 } } },
+      ],
+      //pipeline 2
+      educationCount: [
+        //stage 1
+        { $unwind: "$education" },
+        //stage 2
+        { $group: { _id: "$education", count: { $sum: 1 } } },
+      ],
+    },
+  },
+]);
+```
+
+# $lookup
+
+### The $lookup stage in MongoDB's aggregation framework is used to perform a left outer join between documents from the input collection and documents from another collection. This is particularly useful when you want to combine data from multiple collections based on a common field.
+
+```js
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "test", // from which collection
+      localField: "userId", //with which local field
+      foreignField: "_id", //
+      as: "userDetails",
+    },
+  },
+]);
+```
+
+# Indexing
+
+### Indexing in MongoDB is a way to optimize the performance of queries by creating a data structure that allows the database to efficiently retrieve and filter documents. An index is a special data structure that stores a small portion of the collection’s data set in an easy-to-traverse form.
+
+# Collscan (Collection Scan):
+
+### A collscan occurs when a query needs to scan the entire collection to find the matching documents. This usually happens when there is no suitable index for the query or when the query planner determines that using an index is not optimal.
+
+### A collscan is generally less efficient, especially for large collections, as it involves scanning every document in the collection to find the desired results.
+
+# Ixscan (Index Scan):
+
+```js
+//create index for specific field
+db.massiveData.createIndex({ email: 1 });
+// now if I search with gmail field it wont take as collscan
+```
+
+### An ixscan occurs when MongoDB uses an index to fulfill a query. Instead of scanning the entire collection, MongoDB uses the index to quickly locate the relevant documents.
+
+### An ixscan is generally more efficient than a collscan, particularly when dealing with large datasets, as it allows MongoDB to avoid scanning unnecessary documents.
+
+```js
+// with this we can check the time
+db.massiveData.find({email:"hazelmcmillan@micronaut.com"}).explain(''executionStats)
+
+// remove from index with dropIndex
+db.massiveData.dropIndex({email:1})
+```
+
+# Compound Index
+
+```js
+db.massiveData.createIndex({ gender: -1, age: 1 });
+```
+
+# text index
+
+```js
+db.massiveData.createIndex({ about: "text" }); //create search index with text
+
+db.massiveData.find({ $text: { $search: "dolor" } }); // find with search index field
 ```
