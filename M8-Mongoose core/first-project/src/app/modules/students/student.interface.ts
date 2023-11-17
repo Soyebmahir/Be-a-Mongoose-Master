@@ -27,8 +27,11 @@ export type Student = {
     contactNo: string;
     emergencyContact: string;
     bloodGroup?: 'A+' | 'B+' | 'AB+' | 'O+' | 'A-' | 'B-' | 'AB-' | 'O-';
+    presentAddress: string;
+    permanentAddress: string;
     guardian: Guardian;
     localGuardian: LocalGuardian;
-    profileImg?: string
+    profileImg?: string;
+    isActive: 'active' | 'blocked'
 
 }
