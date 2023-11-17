@@ -64,18 +64,6 @@ const path = require('path');
 dotenv.config({ path: path.join((process.cwd(), '.env')) });
 ```
 
-```
-
-```
-
-```
-
-```
-
-```
-
-```
-
 ### Typescript Eslint Prettier setup
 
 ### https://blog.logrocket.com/linting-typescript-eslint-prettier/
@@ -210,6 +198,34 @@ npx prettier --write file-path
 
 ## To avoid conflict between eslint and prettier
 
+add this to .eslintrc.json
+"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+
 ```bash
 npm install --save-dev eslint-config-prettier
 ```
+
+# start the server
+
+### slow process
+
+- npm run dev
+- node .dist/server.js
+
+## fast process
+
+### create script in package.json
+
+```js
+"start:prod":"node ./dist/server.js"
+"start:dev":"ts-node-dev --respawn --transpile-only .\src\server.ts"
+```
+
+# With typescript
+
+# flow
+
+1. interface / type
+2. schema
+3. model
+4. DB Query
