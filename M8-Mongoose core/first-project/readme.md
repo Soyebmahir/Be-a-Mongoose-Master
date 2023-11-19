@@ -261,3 +261,4 @@ firstName: {
 ```bash
 npm i -D types@validator
 ```
+# joi -> another validator library
