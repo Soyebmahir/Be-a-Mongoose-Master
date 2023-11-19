@@ -229,3 +229,35 @@ npm install --save-dev eslint-config-prettier
 2. schema
 3. model
 4. DB Query
+
+# validator
+
+- Build in validate
+- custom validate
+- npm validator // Third party
+
+```ts
+firstName: {
+        type: String,
+        //build in validators
+        required: [true, 'First Name is Required'],
+        maxlength: [20, 'First name must be less than 20 character'],
+        trim: true,
+        // customs validator
+        validate: {
+            validator: function (value: string) {
+                const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1)
+                return value === firstNameStr
+            },
+            message: '{VALUE} should be in capitalize format.'
+        }
+    },
+```
+
+# npm validator
+
+### which is not ts supported by default so we should install these type with dependency
+
+```bash
+npm i -D types@validator
+```

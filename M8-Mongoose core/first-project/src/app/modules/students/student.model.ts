@@ -1,3 +1,4 @@
+import validator from 'validator';
 import { Schema, model } from 'mongoose';
 import {
     Guardian,
@@ -24,7 +25,11 @@ const userNameSchema = new Schema<UserName>({
     lastName: {
         type: String, required: [true, 'Last Name is Required'],
         maxlength: [20, 'Last name must be less than 20'],
-        trim: true
+        trim: true,
+        validate: {
+            validator: (value: string) => validator.isAlpha(value),
+            message: `{VALUE} is not valid`
+        }
     },
 });
 const localGuardianSchema = new Schema<LocalGuardian>({
@@ -66,6 +71,10 @@ const studentSchema = new Schema<Student>({
     email: {
         type: String,
         required: [true, 'Email is required'],
+        validate: {
+            validator: (value: string) => validator.isEmail(value),
+            message: '{VALUE} is not valid email address pattern'
+        }
     },
     contactNo: {
         type: String,
