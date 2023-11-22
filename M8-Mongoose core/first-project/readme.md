@@ -262,3 +262,4 @@ firstName: {
 npm i -D types@validator
 ```
 # joi -> another validator library
+# zod -> another validator library which is support ts directly 

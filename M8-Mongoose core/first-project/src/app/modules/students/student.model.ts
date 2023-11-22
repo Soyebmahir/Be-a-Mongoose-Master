@@ -1,13 +1,21 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import validator from 'validator';
 import { Schema, model } from 'mongoose';
 import {
-    Guardian,
-    LocalGuardian,
-    Student,
-    UserName,
-} from './student.interface';
+    TGuardian,
+    TLocalGuardian,
+    TStudent,
 
-const userNameSchema = new Schema<UserName>({
+    StudentModel,
+    TUserName,
+
+} from './student.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
+
+
+
+const userNameSchema = new Schema<TUserName>({
     firstName: {
         type: String,
         required: [true, 'First Name is Required'],
@@ -32,12 +40,12 @@ const userNameSchema = new Schema<UserName>({
         }
     },
 });
-const localGuardianSchema = new Schema<LocalGuardian>({
+const localGuardianSchema = new Schema<TLocalGuardian>({
     name: { type: String, required: true },
     occupation: { type: String, required: true },
     contactNo: { type: String, required: true },
 });
-const guardianSchema = new Schema<Guardian>({
+const guardianSchema = new Schema<TGuardian>({
     fatherName: { type: String, required: true },
     fatherOccupation: { type: String, required: true },
     fatherContact: { type: String, required: true },
@@ -45,10 +53,15 @@ const guardianSchema = new Schema<Guardian>({
     motherOccupation: { type: String, required: true },
     motherContact: { type: String, required: true },
 });
-const studentSchema = new Schema<Student>({
+const studentSchema = new Schema<TStudent, StudentModel>({
     id: {
         type: String,
         required: [true, 'Student ID is required'],
+        unique: true,
+    },
+    password: {
+        type: String,
+        required: [true, 'password is required'],
         unique: true,
     },
     name: {
@@ -114,7 +127,57 @@ const studentSchema = new Schema<Student>({
         enum: ['active', 'blocked'],
         default: 'active',
     },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 });
 
-export const StudentModel = model<Student>('Student', studentSchema);
+// document middleware -> directed to current document
+studentSchema.pre('save', async function (next) {
+    console.log(this, 'pre function before save data');
+
+    const user = this;
+    user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_round));
+    next();
+
+
+})
+studentSchema.post('save', function (doc, next) {
+    doc.password = " ";
+    console.log(this, 'post function after save data');
+    next()
+})
+//query middleware -> directed to current query
+studentSchema.pre('find', function (next) {
+
+    this.find({ isDeleted: { $ne: true } })
+
+    next()
+})
+
+
+
+
+
+
+
+
+
+
+
+// create schema for custom static method 
+studentSchema.statics.isUserExist = async function (id: string) {
+    const existingUser = await Student.findOne({ id })
+    return existingUser;
+
+}
+
+// create schema for custom instance method
+// studentSchema.methods.isUserExist = async function (id: string) {
+//     const existingUser = await Student.findOne({ id })
+//     return existingUser;
+// }
+
+export const Student = model<TStudent, StudentModel>('Student', studentSchema);
 // export default StudentModel;
