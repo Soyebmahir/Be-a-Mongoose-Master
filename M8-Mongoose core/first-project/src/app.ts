@@ -12,7 +12,7 @@ app.use(cors());
 app.use('/api/v1/students', StudentRoutes);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
+  res.send('First Project Server is Running on vercel!');
 });
 
 export default app;

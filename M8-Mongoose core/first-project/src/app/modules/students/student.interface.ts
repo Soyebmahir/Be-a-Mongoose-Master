@@ -35,7 +35,7 @@ export type TStudent = {
   localGuardian: TLocalGuardian;
   profileImg?: string;
   isActive: 'active' | 'blocked';
-  isDeleted: boolean
+  isDeleted?: boolean
 };
 //create studentmodel type for custom static method
 
@@ -45,7 +45,7 @@ export interface StudentModel extends Model<TStudent> {
 
 // create studentmodel type for custom instance method 
 // export type StudentMethods = {
-//   isUserExist(id: string): Promise<TStudent | null>
+// isUserExist(id: string): Promise<TStudent | null>
 // }
 // export type StudentModel = Model<TStudent, Record<string, never>, StudentMethods>
 
