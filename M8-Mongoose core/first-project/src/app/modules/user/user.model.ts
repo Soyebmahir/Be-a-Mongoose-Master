@@ -16,12 +16,14 @@ const userSchema = new Schema<TUser>({
     },
     role: {
         type: String,
-        enum: ['student', 'faculty', 'admin']
+        enum: ['student', 'faculty', 'admin'],
+
     },
 
     status: {
         type: String,
-        enum: ['in-progress', 'blocked']
+        enum: ['in-progress', 'blocked'],
+        default: 'in-progress'
     },
     isDeleted: {
         type: Boolean,
