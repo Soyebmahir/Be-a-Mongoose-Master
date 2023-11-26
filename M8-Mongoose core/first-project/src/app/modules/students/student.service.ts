@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { TStudent } from './student.interface';
+
 import { Student } from './student.model';
 
 
@@ -21,7 +21,7 @@ const deleteSingleStudentFromDb = async (id: string) => {
   return result
 }
 export const StudentServices = {
-  createStudentIntoDB,
+
   getAllStudents,
   getSingleStudentFromDB,
   deleteSingleStudentFromDb

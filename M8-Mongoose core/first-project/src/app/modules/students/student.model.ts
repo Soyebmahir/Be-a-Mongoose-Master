@@ -10,8 +10,7 @@ import {
     TUserName,
 
 } from './student.interface';
-import bcrypt from 'bcrypt';
-import config from '../../config';
+
 
 
 
@@ -65,11 +64,7 @@ const studentSchema = new Schema<TStudent, StudentModel>({
         unique: true,
         ref: 'User'
     },
-    password: {
-        type: String,
-        required: [true, 'password is required'],
 
-    },
     name: {
         type: userNameSchema,
         required: [true, 'Name is required'],
@@ -144,21 +139,7 @@ studentSchema.virtual('fullname').get(function () {
     return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
 })
 
-// document middleware -> directed to current document
-studentSchema.pre('save', async function (next) {
-    // console.log(this, 'pre function before save data');
 
-    const user = this;
-    user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_round));
-    next();
-
-
-})
-studentSchema.post('save', function (doc, next) {
-    doc.password = " ";
-    // console.log(this, 'post function after save data');
-    next()
-})
 //query middleware -> directed to current query
 studentSchema.pre('find', function (next) {
 
