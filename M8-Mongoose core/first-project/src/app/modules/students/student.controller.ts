@@ -10,6 +10,7 @@ const createStudent = async (req: Request, res: Response) => {
 
 
     const student = req.body.student;
+    // console.log(req.body);
     //data validation using joi
     // const { error, value } = studentValidationSchema.validate(student)
 
@@ -36,6 +37,7 @@ const createStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
+    console.log('eeeeeeeeeeeeeeee', err, err.message);
     res.status(500).json({
       success: false,
       message: err.message,

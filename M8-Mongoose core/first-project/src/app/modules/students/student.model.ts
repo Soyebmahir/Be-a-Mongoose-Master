@@ -62,7 +62,7 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     password: {
         type: String,
         required: [true, 'password is required'],
-        unique: true,
+
     },
     name: {
         type: userNameSchema,
@@ -144,7 +144,7 @@ studentSchema.virtual('fullname').get(function () {
 
 // document middleware -> directed to current document
 studentSchema.pre('save', async function (next) {
-    console.log(this, 'pre function before save data');
+    // console.log(this, 'pre function before save data');
 
     const user = this;
     user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_round));
@@ -154,7 +154,7 @@ studentSchema.pre('save', async function (next) {
 })
 studentSchema.post('save', function (doc, next) {
     doc.password = " ";
-    console.log(this, 'post function after save data');
+    // console.log(this, 'post function after save data');
     next()
 })
 //query middleware -> directed to current query
