@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 import { UserService } from "./user.service";
+import sendResponse from "../../middlewares/sendResponse";
+import httpStatus from 'http-status';
 // import userValidationSchema from "./user.validation";
 
 const createStudent = async (req: Request, res: Response, next: NextFunction) => {
@@ -12,11 +14,17 @@ const createStudent = async (req: Request, res: Response, next: NextFunction) =>
         const result = await UserService.createStudentIntoDB(password, studentData);
 
         // send response
-        res.status(200).json({
+        // res.status(200).json({
+        //     success: true,
+        //     message: 'Student create successfully',
+        //     data: result,
+        // });
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
             success: true,
             message: 'Student create successfully',
-            data: result,
-        });
+            data: result
+        })
     } catch (err: any) {
 
         next(err)
