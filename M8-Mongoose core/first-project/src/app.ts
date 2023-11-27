@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import cors from 'cors';
-import express, { Application, NextFunction, Request, Response } from 'express';
+import express, { Application, Request, Response } from 'express';
 import { StudentRoutes } from './app/modules/students/student.route';
 import { UserRoutes } from './app/modules/user/user.route';
-import globalErrorHandler from './app/modules/golbalErrorHandler/globalErrorHandler';
+import globalErrorHandler from './app/middlewares/globalErrorHandler';
+import notFound from './app/middlewares/notFound';
 
 const app: Application = express();
 
@@ -22,5 +23,6 @@ app.get('/', (req: Request, res: Response) => {
 
 
 app.use(globalErrorHandler)
-
+//route not found
+app.use(notFound)
 export default app;
