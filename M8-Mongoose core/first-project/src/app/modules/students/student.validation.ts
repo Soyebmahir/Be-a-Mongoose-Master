@@ -31,18 +31,22 @@ const guardianValidationSchema = z.object({
 
 const studentValidationSchema = z.object({
     body: z.object({
-        name: userNameValidationSchema,
-        gender: z.enum(['male', 'female']),
-        dateOfBirth: z.string(),
-        email: z.string().email(),
-        contactNo: z.string(),
-        emergencyContact: z.string(),
-        bloodGroup: z.enum(['A+', 'B+', 'AB+', 'O+', 'A-', 'B-', 'AB-', 'O-']),
-        presentAddress: z.string(),
-        permanentAddress: z.string(),
-        guardian: guardianValidationSchema,
-        localGuardian: localGuardianValidationSchema,
-        profileImg: z.string().optional(),
+        password: z.string().max(20),
+        student: z.object({
+            name: userNameValidationSchema,
+            gender: z.enum(['male', 'female']),
+            dateOfBirth: z.date().optional(),
+            email: z.string().email(),
+            contactNo: z.string(),
+            emergencyContact: z.string(),
+            bloodGroup: z.enum(['A+', 'B+', 'AB+', 'O+', 'A-', 'B-', 'AB-', 'O-']),
+            presentAddress: z.string(),
+            permanentAddress: z.string(),
+            guardian: guardianValidationSchema,
+            localGuardian: localGuardianValidationSchema,
+            profileImg: z.string().optional(),
+
+        })
 
 
     })
