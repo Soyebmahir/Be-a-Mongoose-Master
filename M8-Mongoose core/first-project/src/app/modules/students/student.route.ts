@@ -7,6 +7,6 @@ router
 
   .get('/', StudentController.getAllStudents)
   .get('/:studentID', StudentController.getSingleStudent)
-  .delete('/:studentID', StudentController.deleteSingleStudent)
+  .delete('/:studentID', StudentController.deleteSingleStudent);
 
 export const StudentRoutes = router;

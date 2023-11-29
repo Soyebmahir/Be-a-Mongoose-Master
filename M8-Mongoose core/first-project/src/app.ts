@@ -16,13 +16,11 @@ app.use(cors());
 //application routes
 app.use('/api/v1', router);
 
-
 app.get('/', (req: Request, res: Response) => {
   res.send('First Project Server is Running on vercel!');
 });
 
-
-app.use(globalErrorHandler)
+app.use(globalErrorHandler);
 //route not found
-app.use(notFound)
+app.use(notFound);
 export default app;

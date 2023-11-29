@@ -1,4 +1,4 @@
-import { Model, Types } from "mongoose";
+import { Model, Types } from 'mongoose';
 
 export type TGuardian = {
   fatherName: string;
@@ -34,17 +34,16 @@ export type TStudent = {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImg?: string;
-  isDeleted?: boolean
+  isDeleted?: boolean;
 };
 //create studentmodel type for custom static method
 
 export interface StudentModel extends Model<TStudent> {
-  isUserExist(id: string): Promise<TStudent | null>
+  isUserExist(id: string): Promise<TStudent | null>;
 }
 
-// create studentmodel type for custom instance method 
+// create studentmodel type for custom instance method
 // export type StudentMethods = {
 // isUserExist(id: string): Promise<TStudent | null>
 // }
 // export type StudentModel = Model<TStudent, Record<string, never>, StudentMethods>
-
