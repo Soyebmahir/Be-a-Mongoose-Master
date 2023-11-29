@@ -1,5 +1,4 @@
 import config from '../../config';
-import { academicSemesterCode } from '../academicSemester/academicSemester.const';
 
 import { AcademicSemester } from '../academicSemester/academicSemester.model';
 import { TStudent } from '../students/student.interface';
@@ -20,10 +19,9 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
   //find academic semester info
   const admissionSemester = await AcademicSemester.findById(payload.admissionSemester)
-  // if (!admissionSemester) {
-  //   throw new Error('Admission Semester not found')
-  // }
-  console.log(admissionSemester);
+  if (!admissionSemester) {
+    throw new Error('Admission Semester not found')
+  }
 
 
   //automatically year code and 4 digits 
