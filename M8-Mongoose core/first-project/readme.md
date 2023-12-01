@@ -261,5 +261,192 @@ firstName: {
 ```bash
 npm i -D types@validator
 ```
+
 # joi -> another validator library
-# zod -> another validator library which is support ts directly 
+
+# zod -> another validator library which is support ts directly
+
+# Get Current Path
+
+- 1st path
+
+```js
+process.cwd();
+```
+
+- 2nd way
+
+```js
+__dirname;
+```
+
+## Configure dotenv :
+
+- create 📁configs at src/app/.
+- create a index.ts file :
+- Inside index.ts file :-
+
+```js
+import dotenv from 'dotenv';
+import path from 'path';
+
+// dotenv setup with process.cwd() :
+dotenv.config({ path: path.join(process.cwd() + '.env') });
+// console.log(process.cwd() + ".env");
+
+export = {
+  port: process.env.PORT,
+  database_url: process.env.DATABASE_URI,
+};
+```
+
+# Some Middleware
+
+## - Global Error Handler :
+
+```ts
+import { NextFunction, Request, Response } from 'express';
+
+const globalErrorHandler = async (
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const statusCode = 500;
+  const message = err.message || 'something went wrong';
+
+  return res.status(statusCode).json({
+    success: true,
+    message,
+    err: '',
+  });
+};
+
+export default globalErrorHandler;
+```
+
+# \* NotFound Route Middleware:
+
+```ts
+import { NextFunction, Request, Response } from 'express';
+import httpStatus from 'http-status';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+export const notFound = (req: Request, res: Response, next: NextFunction) => {
+  return res.status(httpStatus.NOT_FOUND).json({
+    success: false,
+    message: 'API Not Found',
+    error: '',
+  });
+};
+```
+
+# Router Management :
+
+- Create a 📁 routes
+
+- Then create a index.ts file
+
+- create an object with routes and it's path
+
+- then loop the route and use router.use(router.path, router.route)
+
+### Example :
+
+```ts
+import express from 'express';
+import { StudentRoutes } from '../modules/student/student.route';
+import { userRouter } from '../modules/user/user.route';
+
+const router = express.Router();
+
+// router.use('/students', StudentRoutes);
+// router.use('/users', userRouter);
+
+const modulesRoute = [
+  {
+    path: '/students',
+    route: StudentRoutes,
+  },
+  {
+    path: '/users',
+    route: userRouter,
+  },
+];
+
+modulesRoute.forEach((route) => router.use(route.path, route.route));
+
+export default router;
+```
+
+# Hoc Function In Express JS:
+
+### catchAsync: It's a HOC Function thats helps us to don't repeat try and catch
+
+### Syntax:
+
+```ts
+const catchAsync = (fn: RequestHandler) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch((err) => next(err));
+  };
+};
+```
+
+### use Case:
+
+```ts
+const getAllStudents: RequestHandler = catchAsync(async (req, res, next) => {
+  const students = await StudentServices.getAllStudentFromDB();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student retrieved successfully',
+    data: students,
+  });
+});
+```
+
+#Utility Functions:
+
+## sendResponse : Send Response helps us don't repeat response code .
+
+### Syntax:
+
+```ts
+import { Response } from 'express';
+
+type TResponse<T> = {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  data: T;
+};
+
+const sendResponse = <T>(res: Response, data: TResponse<T>) => {
+  res.status(data.statusCode).json({
+    success: data.success,
+    message: data.message,
+    data: data.data,
+  });
+};
+
+export default sendResponse;
+```
+
+## use Case:
+
+```ts
+const getAllStudents: RequestHandler = catchAsync(async (req, res, next) => {
+  const students = await StudentServices.getAllStudentFromDB();
+
+  // send response use to send message on client side :
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student retrieved successfully',
+    data: students,
+  });
+});
+```
