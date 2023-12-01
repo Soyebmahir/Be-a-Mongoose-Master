@@ -19,13 +19,13 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
   //find academic semester info
   const admissionSemester = await AcademicSemester.findById(payload.admissionSemester)
-  if (!admissionSemester) {
-    throw new Error('Admission Semester not found')
-  }
+  // if (!admissionSemester) {
+  //   throw new Error('Admission Semester not found')
+  // }
 
 
   //automatically year code and 4 digits 
-  userData.id = await generateStudentId(admissionSemester);
+  userData.id = await generateStudentId(admissionSemester!); //here after exclamatory sign after admissionSemester variable means this varibale cant be false
 
 
 
