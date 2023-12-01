@@ -38,9 +38,9 @@ const getAcademicFacultyById = catchAsync(async (req, res) => {
     })
 })
 const updateAcademicFacultyById = catchAsync(async (req, res) => {
-    const { semesterId } = req.params;
+    const { facultyId } = req.params;
     const updateBody = req.body;
-    const result = await AcademicFacultyServices.updateFacultyIntoDB(semesterId, updateBody)
+    const result = await AcademicFacultyServices.updateFacultyIntoDB(facultyId, updateBody)
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -49,7 +49,7 @@ const updateAcademicFacultyById = catchAsync(async (req, res) => {
     })
 })
 
-export const academicSemesterController = {
+export const academicFacultyController = {
     createAcademicFaculty,
     getAllAcademicFaculty,
     getAcademicFacultyById,
