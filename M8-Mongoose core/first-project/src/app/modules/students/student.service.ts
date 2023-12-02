@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { Student } from './student.model';
 
 const getAllStudents = async () => {
-  const result = await Student.find();
+  const result = await Student.find().populate('admissionSemester').populate('user').populate('academicDepartment');
   return result;
 };
 

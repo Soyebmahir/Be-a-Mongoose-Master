@@ -14,6 +14,7 @@ const globalErrorHandler = (
   return res.status(statusCode).json({
     success: false,
     message,
+    error: err
   });
 };
 export default globalErrorHandler;
