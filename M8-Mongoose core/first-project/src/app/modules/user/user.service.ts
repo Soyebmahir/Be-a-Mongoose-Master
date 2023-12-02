@@ -15,20 +15,16 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   //set Student role
   userData.role = 'student';
 
-
-
   //find academic semester info
-  const admissionSemester = await AcademicSemester.findById(payload.admissionSemester)
+  const admissionSemester = await AcademicSemester.findById(
+    payload.admissionSemester,
+  );
   // if (!admissionSemester) {
   //   throw new Error('Admission Semester not found')
   // }
 
-
-  //automatically year code and 4 digits 
+  //automatically year code and 4 digits
   userData.id = await generateStudentId(admissionSemester!); //here after exclamatory sign after admissionSemester variable means this varibale cant be false
-
-
-
 
   //create a user
   const newUser = await User.create(userData);
