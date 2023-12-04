@@ -8,6 +8,7 @@ import config from '../config';
 import { TErrorSources } from '../interface/Error';
 import { handleZodError } from '../Errors/handleZodError';
 import { handleMongooseError } from '../Errors/handleMongooseError';
+import { handleCastError } from '../Errors/handleCastError';
 const globalErrorHandler: ErrorRequestHandler = (
   err,
   req,
@@ -29,12 +30,17 @@ const globalErrorHandler: ErrorRequestHandler = (
     statusCode = modifiedError?.statusCode;
     message = modifiedError?.message;
     errorSources = modifiedError?.errorSources
-  } if (err.name === 'ValidationError') {
+  } else if (err.name === 'ValidationError') {
     const modifiedError = handleMongooseError(err)
     statusCode = modifiedError?.statusCode;
     message = modifiedError?.message;
     errorSources = modifiedError?.errorSources
 
+  } else if (err.name === 'CastError') {
+    const modifiedError = handleCastError(err)
+    statusCode = modifiedError?.statusCode;
+    message = modifiedError?.message;
+    errorSources = modifiedError?.errorSources
   }
 
 
@@ -43,7 +49,7 @@ const globalErrorHandler: ErrorRequestHandler = (
     success: false,
     message,
     errorSources,
-    // err,
+    err,
     stack: config.NODE_ENV === 'development' ? err?.stack : null
   });
 };
