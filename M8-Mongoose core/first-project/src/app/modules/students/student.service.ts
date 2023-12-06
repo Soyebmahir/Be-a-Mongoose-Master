@@ -1,6 +1,6 @@
 
 
-import mongoose, { IfUnknown } from 'mongoose';
+
 import { Student } from './student.model';
 import AppError from '../../Errors/AppError';
 import httpStatus from 'http-status';
@@ -26,8 +26,10 @@ const getAllStudents = async (query: Record<string, unknown>) => {
     searchTerm = query?.searchTerm as string
   }
   //for method chaining we separated this as searchQuery
+
+  const searchableFields = ['email', 'presentAddress', 'name.firstName']
   const searchQuery = Student.find({
-    $or: ['email', 'presentAddress', 'name.firstName'].map((field) => ({ //need to cover this [field]: { $regex: searchTerm, $options: "i" } in first bracket
+    $or: searchableFields.map((field) => ({ //need to cover this [field]: { $regex: searchTerm, $options: "i" } in first bracket
       [field]: { $regex: searchTerm, $options: "i" }
     }))
   })
