@@ -9,6 +9,7 @@ import { TErrorSources } from '../interface/Error';
 import { handleZodError } from '../Errors/handleZodError';
 import { handleMongooseError } from '../Errors/handleMongooseError';
 import { handleCastError } from '../Errors/handleCastError';
+import { handleDuplicateError } from '../Errors/handleDuplicateError';
 const globalErrorHandler: ErrorRequestHandler = (
   err,
   req,
@@ -38,6 +39,11 @@ const globalErrorHandler: ErrorRequestHandler = (
 
   } else if (err.name === 'CastError') {
     const modifiedError = handleCastError(err)
+    statusCode = modifiedError?.statusCode;
+    message = modifiedError?.message;
+    errorSources = modifiedError?.errorSources
+  } else if (err.code === 11000) {
+    const modifiedError = handleDuplicateError(err)
     statusCode = modifiedError?.statusCode;
     message = modifiedError?.message;
     errorSources = modifiedError?.errorSources

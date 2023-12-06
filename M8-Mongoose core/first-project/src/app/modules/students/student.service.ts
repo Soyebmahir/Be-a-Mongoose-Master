@@ -1,20 +1,86 @@
 
 
-import mongoose from 'mongoose';
+import mongoose, { IfUnknown } from 'mongoose';
 import { Student } from './student.model';
 import AppError from '../../Errors/AppError';
 import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 
-const getAllStudents = async () => {
-  const result = await Student.find().populate('admissionSemester').populate('user').populate({
-    path: 'academicDepartment',
-    populate: {
-      path: 'academicFaculty'
-    }
+
+const getAllStudents = async (query: Record<string, unknown>) => {
+
+
+  // spreading query object so that we can exclude some field and shouldnot affect the real query object
+  const queryObj = { ...query }
+  //exclude fields
+  const excludeFields = ["searchTerm", "sort", 'limit', 'page', 'fields']
+  excludeFields.forEach(element => {
+    delete queryObj[element]
   });
-  return result;
+  console.log({ query });
+  console.log({ queryObj });
+
+  let searchTerm = '';
+  if (query?.searchTerm) {
+    searchTerm = query?.searchTerm as string
+  }
+  //for method chaining we separated this as searchQuery
+  const searchQuery = Student.find({
+    $or: ['email', 'presentAddress', 'name.firstName'].map((field) => ({ //need to cover this [field]: { $regex: searchTerm, $options: "i" } in first bracket
+      [field]: { $regex: searchTerm, $options: "i" }
+    }))
+  })
+
+  const filterQuery = searchQuery.find(queryObj)
+    .populate('admissionSemester')
+    .populate('user').populate({
+      path: 'academicDepartment',
+      populate: {
+        path: 'academicFaculty'
+      }
+    });
+  let sort = "-createdAt";
+  if (query?.sort) {
+    sort = query.sort as string
+  }
+
+  const sortQuery = filterQuery.sort(sort)
+
+
+  let page = 1
+  let limit = 1
+  let skip = 0
+  //check limit
+  if (query?.limit) {
+    limit = Number(query.limit)
+  }
+  //check page
+  if (query?.page) {
+    page = Number(query.page)
+    skip = (page - 1) * limit
+  }
+
+
+
+  const paginationQuery = sortQuery.skip(skip)
+
+  const limitQuery = paginationQuery.limit(limit)
+
+  //fields limiting
+  let fields = '__v'
+
+  // fields = 'name,email'
+  // fields = 'name email'
+  if (query?.fields) {
+    fields = (query.fields as string).split(',').join(' ')
+    console.log({ fields });
+  }
+
+  const fieldsQuery = await limitQuery.select(fields)
+
+  // console.log(result);
+  return fieldsQuery;
 };
 
 const getSingleStudentFromDB = async (id: string) => {
