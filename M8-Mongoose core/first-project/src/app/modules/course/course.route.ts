@@ -5,7 +5,7 @@ import { CourseController } from './course.controller';
 
 const router = express.Router();
 router.post(
-    '/create-academic-department',
+    '/create-course',
     validateRequest(
         courseValidations.createCourseValidationSchema
     ),
@@ -16,11 +16,11 @@ router.get(
     '/:id',
     CourseController.getSingleCourseById,
 );
-// router.patch(
-//     '/:id',
-//    CourseController.
-// );
 router.patch(
+    '/:id', validateRequest(courseValidations.updateCourseValidationSchema),
+    CourseController.updateCourse
+);
+router.delete(
     '/:id',
     CourseController.deleteCourseById
 );
