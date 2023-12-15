@@ -60,9 +60,6 @@ const updateCoursesIntoDB = async (id: string, payload: Partial<TCourse>) => {
                 throw new AppError(httpStatus.BAD_REQUEST, 'Failed to deletePreRequisite Course')
             }
 
-
-
-
             const newPreRequisiteCourse = preRequisiteCourses?.filter(el => el.course && !el.isDeleted)
             // console.log(newPreRequisiteCourse);
             const addedPreRequisiteCourses = await Course.findByIdAndUpdate(id, {
