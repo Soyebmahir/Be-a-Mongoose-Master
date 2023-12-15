@@ -8,7 +8,11 @@ import { Student } from '../students/student.model';
 import { TUser } from './user.interface';
 
 import { User } from './user.model';
-import { generateAdminId, generateFacultyId, generateStudentId } from './user.utils';
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from './user.utils';
 import AppError from '../../Errors/AppError';
 import httpStatus from 'http-status';
 import { TFaculty } from '../faculty/faculty.interface';
@@ -35,7 +39,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   const session = await mongoose.startSession();
   try {
     //have start the transaction
-    session.startTransaction()
+    session.startTransaction();
 
     //automatically year code and 4 digits
     userData.id = await generateStudentId(admissionSemester!); //here after exclamatory sign after admissionSemester variable means this varibale cant be false
@@ -46,20 +50,20 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     // create a student
     //if (Object.keys(newUser).length) { //this way wont not work cz newUser now a array
     if (!newUser.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'User not created')
+      throw new AppError(httpStatus.BAD_REQUEST, 'User not created');
     } else {
       //set id , _id
-      // payload.id = newUser.id; 
+      // payload.id = newUser.id;
       // payload.user = newUser._id; ///this way wont not work cz newUser now a array
-      payload.id = newUser[0].id
-      payload.user = newUser[0]._id // as reference
+      payload.id = newUser[0].id;
+      payload.user = newUser[0]._id; // as reference
 
       //create student (transaction -2)
-      const newStudent = await Student.create([payload], { session });//arrray
+      const newStudent = await Student.create([payload], { session }); //arrray
       if (!newStudent.length) {
-        throw new AppError(httpStatus.BAD_REQUEST, 'Student not created')
+        throw new AppError(httpStatus.BAD_REQUEST, 'Student not created');
       }
-      //save the data to DB by commit the transaction 
+      //save the data to DB by commit the transaction
 
       await session.commitTransaction();
       await session.endSession();
@@ -67,11 +71,9 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
       return newStudent;
     }
   } catch (error) {
-    await session.abortTransaction()
-    await session.endSession()
-
+    await session.abortTransaction();
+    await session.endSession();
   }
-
 };
 
 const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
@@ -181,4 +183,3 @@ export const UserServices = {
   createFacultyIntoDB,
   createAdminIntoDB,
 };
-

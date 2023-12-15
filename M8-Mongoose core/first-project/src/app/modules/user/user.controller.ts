@@ -51,4 +51,3 @@ export const UserControllers = {
   createFaculty,
   createAdmin,
 };
-

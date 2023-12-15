@@ -10,53 +10,46 @@ import { handleZodError } from '../Errors/handleZodError';
 import { handleMongooseError } from '../Errors/handleMongooseError';
 import { handleCastError } from '../Errors/handleCastError';
 import { handleDuplicateError } from '../Errors/handleDuplicateError';
-const globalErrorHandler: ErrorRequestHandler = (
-  err,
-  req,
-  res,
-  next,
-) => {
+const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let statusCode = err.statusCode || 500;
   let message = err.message || 'something Went wrong';
 
-  let errorSources: TErrorSources = [{
-    path: "",
-    message: 'Something went Wrong'
-
-  }]
+  let errorSources: TErrorSources = [
+    {
+      path: '',
+      message: 'Something went Wrong',
+    },
+  ];
 
   //error checking
   if (err instanceof ZodError) {
-    const modifiedError = handleZodError(err)
+    const modifiedError = handleZodError(err);
     statusCode = modifiedError?.statusCode;
     message = modifiedError?.message;
-    errorSources = modifiedError?.errorSources
+    errorSources = modifiedError?.errorSources;
   } else if (err.name === 'ValidationError') {
-    const modifiedError = handleMongooseError(err)
+    const modifiedError = handleMongooseError(err);
     statusCode = modifiedError?.statusCode;
     message = modifiedError?.message;
-    errorSources = modifiedError?.errorSources
-
+    errorSources = modifiedError?.errorSources;
   } else if (err.name === 'CastError') {
-    const modifiedError = handleCastError(err)
+    const modifiedError = handleCastError(err);
     statusCode = modifiedError?.statusCode;
     message = modifiedError?.message;
-    errorSources = modifiedError?.errorSources
+    errorSources = modifiedError?.errorSources;
   } else if (err.code === 11000) {
-    const modifiedError = handleDuplicateError(err)
+    const modifiedError = handleDuplicateError(err);
     statusCode = modifiedError?.statusCode;
     message = modifiedError?.message;
-    errorSources = modifiedError?.errorSources
+    errorSources = modifiedError?.errorSources;
   }
-
-
 
   return res.status(statusCode).json({
     success: false,
     message,
     errorSources,
     err,
-    stack: config.NODE_ENV === 'development' ? err?.stack : null
+    stack: config.NODE_ENV === 'development' ? err?.stack : null,
   });
 };
 export default globalErrorHandler;

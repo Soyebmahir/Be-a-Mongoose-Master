@@ -2,8 +2,7 @@ import app from './app';
 import config from './app/config';
 
 import mongoose from 'mongoose';
-import { Server } from 'http'
-
+import { Server } from 'http';
 
 let server: Server;
 
@@ -23,13 +22,12 @@ process.on('unhandledRejection', () => {
   console.log(`unhandle Rejection is detected, shutting down`);
   if (server) {
     server.close(() => {
-      process.exit(1)
-    })
+      process.exit(1);
+    });
   }
-  process.exit(1)
-})
+  process.exit(1);
+});
 process.on('uncaughtException', () => {
   console.log(`uncaughtException is detected, shutting down`);
-  process.exit(1)
-})
-
+  process.exit(1);
+});
